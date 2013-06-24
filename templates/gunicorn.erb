@@ -4,7 +4,7 @@ CONFIG = {
 <% else -%>
   'mode': 'wsgi',
 <% end -%>
-<% if virtualenv -%>
+<% if @virtualenv -%>
   'environment': {
 <% if @environment -%>
     'ENVIRONMENT': '<%= @environment %>',
