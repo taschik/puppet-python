@@ -80,7 +80,7 @@ define python::pip (
 
   case $ensure {
     present: {
-      exec { "pip_install_${package}":
+      exec { "pip_install_${name}":
         command     => "$pip_env --log-file ${cwd}/pip.log install ${proxy_flag} ${source}",
         unless      => "$pip_env freeze | grep -i -e ${grep_regex}",
         user        => $owner,
@@ -89,8 +89,8 @@ define python::pip (
     }
 
     default: {
-      exec { "pip_uninstall_${package}":
-        command     => "echo y | $pip_env uninstall ${proxy_flag} ${name}",
+      exec { "pip_uninstall_${name}":
+        command     => "echo y | $pip_env uninstall ${proxy_flag} ${package}",
         onlyif      => "$pip_env freeze | grep -i -e ${grep_regex}",
         user        => $owner,
         environment => $environment,
