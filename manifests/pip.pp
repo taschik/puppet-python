@@ -35,6 +35,7 @@
 # Fotis Gimian
 #
 define python::pip (
+  $package     = '',
   $ensure      = present,
   $virtualenv  = 'system',
   $url         = false,
@@ -67,19 +68,19 @@ define python::pip (
     default  => "--proxy=${proxy}",
   }
 
-  $grep_regex = $name ? {
-    /==/    => "^${name}\$",
-    default => "^${name}==",
+  $grep_regex = $package ? {
+    /==/    => "^${package}\$",
+    default => "^${package}==",
   }
 
   $source = $url ? {
-    false   => $name,
-    default => "${url}#egg=${name}",
+    false   => $package,
+    default => "${url}#egg=${package}",
   }
 
   case $ensure {
     present: {
-      exec { "pip_install_${name}":
+      exec { "pip_install_${package}":
         command     => "$pip_env --log-file ${cwd}/pip.log install ${proxy_flag} ${source}",
         unless      => "$pip_env freeze | grep -i -e ${grep_regex}",
         user        => $owner,
@@ -88,7 +89,7 @@ define python::pip (
     }
 
     default: {
-      exec { "pip_uninstall_${name}":
+      exec { "pip_uninstall_${package}":
         command     => "echo y | $pip_env uninstall ${proxy_flag} ${name}",
         onlyif      => "$pip_env freeze | grep -i -e ${grep_regex}",
         user        => $owner,
